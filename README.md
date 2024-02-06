@@ -1,1 +1,1 @@
-Personal project starter files.
+Live version: https://ia-tic-tac-toe.netlify.app
