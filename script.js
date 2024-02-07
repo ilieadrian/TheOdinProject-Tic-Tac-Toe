@@ -15,10 +15,15 @@ const Gameboard = (function () {
 
   const placeMark = (row, column, player) => {
     if (row >= 0 && row < rows && column >= 0 && column < columns) {
-      board[row][column].addMark(player);
+      if(!board[row][column].isOccupied()) {
+        board[row][column].addMark(player);
+      } else {
+        console.log("Cell is already occupied");
+      }
     } else {
       console.error("Invalid row or column");
     }
+    
   };
 
 //  !!!
@@ -39,16 +44,20 @@ function Cell() {
     value = player;
   };
 
+  const isOccupied  = () => value !== 0;
+
   const getValue = () => value;
 
   return {
     addMark,
-    getValue
+    getValue,
+    isOccupied
   };
 }
 
 
-Gameboard.placeMark(0, 2, "x")
+Gameboard.placeMark(0, 1, "x")
+
 console.log(Gameboard.printBoard())
 
 
