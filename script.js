@@ -1,5 +1,5 @@
 // gameboard
-const Gameboard = (function () {
+const Gameboard = function () {
   const rows = 3;
   const columns = 3;
   const board = [];
@@ -26,7 +26,7 @@ const Gameboard = (function () {
     
   };
 
-//  !!!
+//  Remove after DOM intercation is added!!!
   const printBoard = () => {
     const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
     console.table(boardWithCellValues);
@@ -34,7 +34,7 @@ const Gameboard = (function () {
 //  !!!
 
   return { getBoard, placeMark, printBoard };
-})();
+};
 
 
 function Cell() {
@@ -55,17 +55,82 @@ function Cell() {
   };
 }
 
-
-Gameboard.placeMark(0, 1, "x")
-
-console.log(Gameboard.printBoard())
-
-
-
 // gamecontroller
+function GameController(
+  playerOneName = "Player One",
+  playerTwoName = "Player Two"
+) {
+  const board = Gameboard();
+
+  const players = [
+    {
+      name: playerOneName,
+      mark: "X"
+    },
+    {
+      name: playerTwoName,
+      mark: "0"
+    }
+  ];
+
+  let activePlayer = players[0];
+
+  const switchPlayerTurn = () => {
+    activePlayer = activePlayer === players[0] ? players[1] : players[0];
+  };
+  const getActivePlayer = () => activePlayer;
+
+  const printNewRound = () => {
+    board.printBoard();
+    console.log(`${getActivePlayer().name}'s turn.`);
+  };
+
+  const playRound = (column, row) => {
+    console.log(
+      `Dropping ${getActivePlayer().name}'s token into column ${column, row}...`
+    );
+    board.placeMark(column, row, getActivePlayer().mark);
+
+    /*  This is where we would check for a winner and handle that logic,
+        such as a win message. */
+        
+
+    switchPlayerTurn();
+    printNewRound();
+  };
+
+  printNewRound();
+  
+
+  return {
+    playRound,
+    getActivePlayer,
+    getBoard: board.getBoard
+  };
+}
+const game = GameController("Player One", "Player Two");
+
+
+game.playRound(2, 2);
+game.playRound(1, 1);
+game.playRound(2, 1);
+game.playRound(0, 1);
+game.playRound(2, 0);
+console.log("Current game board:", game.getBoard());
+
+
+
 // check for all winning 3-in-a-rows and ties
 
 // player
+
+
+
+
+
+// Gameboard.placeMark(0, 1, "x")
+
+// console.log(Gameboard.printBoard())
 
 
 // handle the display/DOM logic
