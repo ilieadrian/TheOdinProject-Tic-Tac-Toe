@@ -7,7 +7,7 @@ const Gameboard = function () {
   for (let i = 0; i < rows; i++) {
     board[i] = [];
     for (let j = 0; j < columns; j++) {
-      board[i].push(Cell([i]));
+      board[i].push(Cell(i));
     }
   }
 
@@ -37,7 +37,7 @@ const Gameboard = function () {
 };
 
 
-function Cell() {
+function Cell(i) {
   let value = 0;
 
   const addMark = (player) => {
@@ -89,10 +89,22 @@ function GameController(
     console.log(
       `Dropping ${getActivePlayer().name}'s token into column ${column, row}...`
     );
-    board.placeMark(column, row, getActivePlayer().mark);
+    board.placeMark(column, row, getActivePlayer().mark)
 
-    /*  This is where we would check for a winner and handle that logic,
-        such as a win message. */
+    
+    const cell = board.getBoard()[row][column];
+
+    if (!cell.isOccupied()) {
+      board.placeMark(column, row, getActivePlayer().mark);
+      
+      switchPlayerTurn();
+      printNewRound();
+    } else {
+      console.log("Cell is already occupied");
+    }
+
+
+    /*  check for all winning 3-in-a-rows and ties. */
         
 
     switchPlayerTurn();
@@ -111,11 +123,11 @@ function GameController(
 const game = GameController("Player One", "Player Two");
 
 
-game.playRound(2, 2);
-game.playRound(1, 1);
-game.playRound(2, 1);
 game.playRound(0, 1);
-game.playRound(2, 0);
+game.playRound(1, 2);
+// game.playRound(2, 0);
+// game.playRound(0, 1);
+// game.playRound(2, 0);
 console.log("Current game board:", game.getBoard());
 
 
