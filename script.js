@@ -89,7 +89,6 @@ function GameController(
     console.log(
       `Dropping ${getActivePlayer().name}'s token into column ${column, row}...`
     );
-    board.placeMark(column, row, getActivePlayer().mark)
 
     
     const cell = board.getBoard()[row][column];
@@ -101,14 +100,14 @@ function GameController(
       printNewRound();
     } else {
       console.log("Cell is already occupied");
+      return;
     }
 
 
     /*  check for all winning 3-in-a-rows and ties. */
         
 
-    switchPlayerTurn();
-    printNewRound();
+
   };
 
   printNewRound();
@@ -120,15 +119,15 @@ function GameController(
     getBoard: board.getBoard
   };
 }
-const game = GameController("Player One", "Player Two");
+const game = GameController("x", "y");
 
 
 game.playRound(0, 1);
 game.playRound(1, 2);
-// game.playRound(2, 0);
-// game.playRound(0, 1);
-// game.playRound(2, 0);
-console.log("Current game board:", game.getBoard());
+game.playRound(2, 0);
+game.playRound(0, 1);
+game.playRound(2, 0);
+// console.log("Current game board:", game.getBoard());
 
 
 
