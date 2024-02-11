@@ -19,11 +19,12 @@ const Gameboard = function () {
         board[row][column].addMark(player);
       } else {
         console.log("Cell is already occupied");
+        
+        
       }
     } else {
       console.error("Invalid row or column");
     }
-    
   };
 
 //  Remove after DOM intercation is added!!!
@@ -33,7 +34,12 @@ const Gameboard = function () {
   };
 //  !!!
 
-  return { getBoard, placeMark, printBoard };
+  return { 
+    getBoard, 
+    placeMark, 
+    printBoard, 
+    board 
+  };
 };
 
 
@@ -51,14 +57,15 @@ function Cell(i) {
   return {
     addMark,
     getValue,
-    isOccupied
-  };
+    isOccupied,
+    };
 }
+
 
 // gamecontroller
 function GameController(
-  playerOneName = "Player One",
-  playerTwoName = "Player Two"
+  playerOneName = "X Player",
+  playerTwoName = "0 Player"
 ) {
   const board = Gameboard();
 
@@ -72,7 +79,7 @@ function GameController(
       mark: "0"
     }
   ];
-
+  
   let activePlayer = players[0];
 
   const switchPlayerTurn = () => {
@@ -87,10 +94,9 @@ function GameController(
 
   const playRound = (column, row) => {
     console.log(
-      `Dropping ${getActivePlayer().name}'s token into column ${column, row}...`
+      `Dropping ${getActivePlayer().name}'s token into column ${column}, row ${row}...`
     );
 
-    
     const cell = board.getBoard()[row][column];
 
     if (!cell.isOccupied()) {
@@ -98,36 +104,96 @@ function GameController(
       
       switchPlayerTurn();
       printNewRound();
+      checkWinner();
     } else {
       console.log("Cell is already occupied");
       return;
     }
-
-
-    /*  check for all winning 3-in-a-rows and ties. */
-        
-
-
   };
 
-  printNewRound();
-  
 
+  const checkWinner = () => {
+    // const cellsFlatened = getBoard().map((row) => row.map((cell) => cell.getValue())).flat();
+    const cellsFlatened = getBoard().flat().map((cell) => cell.getValue());
+
+        console.log("Cells Flattened:", cellsFlatened);
+
+
+    // Check for a winner in the vertical direction
+    for (let i = 0; i < 3; i++) {
+        if (
+            cellsFlatened[i] !== 0 &&
+            cellsFlatened[i] === cellsFlatened[i + 3] &&
+            cellsFlatened[i] === cellsFlatened[i + 6]
+        ) {
+            console.log(`Player ${cellsFlatened[i]} wins vertically!`);
+            return;
+        }
+    }
+
+    // Check for a winner in the horizontal direction
+    for (let i = 0; i < 9; i += 3) {
+        if (
+            cellsFlatened[i] !== 0 &&
+            cellsFlatened[i] === cellsFlatened[i + 1] &&
+            cellsFlatened[i] === cellsFlatened[i + 2]
+        ) {
+            console.log(`Player ${cellsFlatened[i]} wins horizontally!`);
+            return;
+        }
+    }
+
+    // Check for a winner in the diagonal direction
+    if (
+        cellsFlatened[0] !== 0 &&
+        cellsFlatened[0] === cellsFlatened[4] &&
+        cellsFlatened[0] === cellsFlatened[8]
+    ) {
+        console.log(`Player ${cellsFlatened[0]} wins diagonally (from top-left to bottom-right)!`);
+        return;
+    }
+
+    if (
+        cellsFlatened[2] !== 0 &&
+        cellsFlatened[2] === cellsFlatened[4] &&
+        cellsFlatened[2] === cellsFlatened[6]
+    ) {
+        console.log(`Player ${cellsFlatened[2]} wins diagonally (from top-right to bottom-left)!`);
+        return;
+    }
+
+    // Check for a tie
+    if (!cellsFlatened.includes(0)) {
+        console.log("It's a tie!");
+    }
+};
+
+  const getBoard = () => board.getBoard();
+
+
+  printNewRound();
+    
   return {
     playRound,
     getActivePlayer,
-    getBoard: board.getBoard
-  };
+    checkWinner,
+    getBoard,
+    };
 }
-const game = GameController("x", "y");
+const game = GameController("Player One", "Player Two");
 
 
-game.playRound(0, 1);
-game.playRound(1, 2);
-game.playRound(2, 0);
-game.playRound(0, 1);
-game.playRound(2, 0);
-// console.log("Current game board:", game.getBoard());
+
+game.playRound(0, 2); // Player One (X) - Bottom-left
+game.playRound(0, 0); // Player Two (O)
+game.playRound(1, 2); // Player One (X) - Bottom-center
+game.playRound(2, 0); // Player Two (O)
+game.playRound(2, 2); // Player One (X) - Bottom-right - Vertical win!
+
+
+
+
+
 
 
 
