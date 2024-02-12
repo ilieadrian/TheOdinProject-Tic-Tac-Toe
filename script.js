@@ -32,15 +32,10 @@ const Gameboard = function () {
   };
 //  !!!
 
-  return { 
-    getBoard, 
-    placeMark, 
-    printBoard, 
-    board 
-  };
+  return { getBoard, placeMark, printBoard,board };
 };
 
-function Cell(i) {
+function Cell() {
   let value = 0;
 
   const addMark = (player) => {
@@ -51,30 +46,39 @@ function Cell(i) {
 
   const getValue = () => value;
 
-  return {
-    addMark,
-    getValue,
-    isOccupied,
-    };
+  return { addMark, getValue, isOccupied };
+}
+
+function createUser(name) {
+  let wins = 0;
+  let userName = name;
+
+  const getWins = () => wins;
+  const addWin = () => wins++;
+
+  return { userName, getWins, addWin }
 }
 
 // gamecontroller
-function GameController(
-  playerOneName = "X Player",
-  playerTwoName = "0 Player"
-) {
+function GameController(playerOne, playerTwo) {
   const board = Gameboard();
+  const playerOneObj = createUser(playerOne, "X");
+  const playerTwoObj = createUser(playerTwo, "0");
 
-  const players = [
-    {
-      name: playerOneName,
-      mark: "X"
-    },
-    {
-      name: playerTwoName,
-      mark: "0"
-    }
-  ];
+  const players = [playerOneObj, playerTwoObj];
+  // const playerOneName = createUser(playerOne);
+  // const playerTwoName = createUser(playerTwo);
+
+  // const players = [
+  //   {
+  //     name: playerOneName.userName,
+  //     mark: "X"
+  //   },
+  //   {
+  //     name: playerTwoName.userName,
+  //     mark: "0"
+  //   }
+  // ];
   
   let activePlayer = players[0];
 
@@ -83,20 +87,24 @@ function GameController(
   };
   const getActivePlayer = () => activePlayer;
 
+  
+
   const printNewRound = () => {
+    // board.printBoard();
+    // console.log(`${getActivePlayer().name}'s turn.`);
     board.printBoard();
-    console.log(`${getActivePlayer().name}'s turn.`);
-  };
+    console.log(`${getActivePlayer().userName}'s turn.`);
+    console.log(`Wins - ${playerOneObj.userName}: ${playerOneObj.getWins()}, ${playerTwoObj.userName}: ${playerTwoObj.getWins()}`);};
+
 
   const playRound = (column, row) => {
     console.log(
-      `Dropping ${getActivePlayer().name}'s token into column ${column}, row ${row}...`
+      `Dropping ${getActivePlayer().userName}'s token into column ${column}, row ${row}...`
     );
 
     const cell = board.getBoard()[column][row];
 
     if (!cell.isOccupied()) {
-      board.placeMark(column, row, getActivePlayer().mark);
       
       switchPlayerTurn();
       printNewRound();
@@ -108,8 +116,8 @@ function GameController(
   };
 
 const checkWinner = () => {
-  // const cellsFlatened = getBoard().map((row) => row.map((cell) => cell.getValue())).flat();
   const cellsFlatened = getBoard().flat().map((cell) => cell.getValue());
+  console.log(cellsFlatened)
 
   // Check for a winner in the vertical direction
   for (let i = 0; i < 3; i++) {
@@ -159,20 +167,14 @@ const checkWinner = () => {
       console.log("It's a tie!");
   }
 };
-
   const getBoard = () => board.getBoard();
-
 
   printNewRound();
     
-  return {
-    playRound,
-    getActivePlayer,
-    checkWinner,
-    getBoard,
-    };
+  return { playRound, getActivePlayer, checkWinner, getBoard };
+
 }
-const game = GameController("Player One", "Player Two");
+const game = GameController("Camy", "Amy");
 
 
                   // Test game scenarios
@@ -236,25 +238,25 @@ const game = GameController("Player One", "Player Two");
 // game.playRound(2, 2);
 
 //Top-right to bottom-left
-// game.playRound(0, 2); 
-// game.playRound(0, 0); 
-// game.playRound(1, 1); 
-// game.playRound(1, 2); 
-// game.playRound(2, 0); 
-// game.playRound(2, 2);
+game.playRound(0, 2); 
+game.playRound(0, 0); 
+game.playRound(1, 1); 
+game.playRound(1, 2); 
+game.playRound(2, 0); 
+game.playRound(2, 2);
 
                     // Tie scenario
-game.playRound(0, 0); // Player One (X)
-game.playRound(0, 1); // Player Two (O)
-game.playRound(0, 2); // Player One (X)
+// game.playRound(0, 0); // Player One (X)
+// game.playRound(0, 1); // Player Two (O)
+// game.playRound(0, 2); // Player One (X)
 
-game.playRound(2, 0); // Player Two (O)
-game.playRound(1, 1); // Player One (X)
-game.playRound(1, 2); // Player Two (O)
+// game.playRound(2, 0); // Player Two (O)
+// game.playRound(1, 1); // Player One (X)
+// game.playRound(1, 2); // Player Two (O)
 
-game.playRound(1, 0); // Player One (X)
-game.playRound(2, 2); // Player Two (O)
-game.playRound(2, 1); // Player One (X)
+// game.playRound(1, 0); // Player One (X)
+// game.playRound(2, 2); // Player Two (O)
+// game.playRound(2, 1); // Player One (X)
 
 
 
