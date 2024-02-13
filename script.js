@@ -11,6 +11,27 @@ const Gameboard = function () {
     }
   }
 
+// Test space
+const createDiv = () => {
+  const playGrid = document.getElementById("play-grid");
+  let gridItem = document.createElement("div");
+  gridItem.classList = "cell";
+
+  playGrid.appendChild(gridItem);
+}
+
+const displayBoard = () => {
+  const boardLoop = board.map((row) => row.map((cell) => createDiv()))
+  console.table("From displayBoard",  boardLoop);
+};
+
+displayBoard()
+
+// Test space
+
+
+
+
   const initializeBoard = () => {
     board = [];
     for (let i = 0; i < columns; i++) {
@@ -46,7 +67,7 @@ const Gameboard = function () {
   };
 //  !!!
 
-  return { getBoard, resetBoard, placeMark, printBoard, board };
+  return { getBoard, resetBoard, displayBoard, placeMark, printBoard, board,  };
 };
 
 function Cell() {
@@ -62,6 +83,14 @@ function Cell() {
 
   return { placeMark, getValue, isOccupied };
 }
+
+// function updateDOM() {
+//   const playGrid = document.getElementById("play-grid");
+//   const currentBoard = GameController.getBoard;
+//   // const cell = ;
+
+//   console.log("DOM CELL", currentBoard);
+// };
 
 function CreateUser(name, mark) {
   let wins = 0;
@@ -201,6 +230,7 @@ const checkWinner = () => {
   return { playRound, getActivePlayer, checkWinner, getBoard };
 
 }
+
 const game = GameController("Camy", "Amy");
 
 
@@ -209,9 +239,10 @@ const game = GameController("Camy", "Amy");
 //Top row
 game.playRound(0, 0); 
 game.playRound(1, 1); 
-game.playRound(0, 1); 
-game.playRound(1, 2); 
-game.playRound(0, 2); 
+
+// game.playRound(0, 1); 
+// game.playRound(1, 2); 
+// game.playRound(0, 2); 
 
 //Middle row
 // game.playRound(0, 0); 
@@ -240,12 +271,12 @@ game.playRound(0, 2);
 
 
 // Center column
-game.playRound(0, 1); 
-game.playRound(0, 2); 
-game.playRound(1, 1); 
-game.playRound(1, 2); 
-game.playRound(2, 1); 
-game.playRound(2, 2); 
+// game.playRound(0, 1); 
+// game.playRound(0, 2); 
+// game.playRound(1, 1); 
+// game.playRound(1, 2); 
+// game.playRound(2, 1); 
+// game.playRound(2, 2); 
 
 
 // Right column
@@ -285,7 +316,7 @@ game.playRound(2, 2);
 // game.playRound(1, 0); // Player One (X)
 // game.playRound(2, 2); // Player Two (O)
 // game.playRound(2, 1); // Player One (X)
-
+// updateDOM();
 
 
 
