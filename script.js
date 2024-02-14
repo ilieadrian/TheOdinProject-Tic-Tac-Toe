@@ -44,7 +44,6 @@ const Gameboard = function () {
     const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
     console.table(boardWithCellValues);
   };
-  
 //  !!!
 
   return { getBoard, resetBoard, placeMark, printBoard, board };
@@ -54,31 +53,42 @@ const updateDOM = () => {
   const playGrid = document.getElementById("play-grid");
   const board = game.getBoard();
 
-  // Clear existing content
   playGrid.innerHTML = "";
 
-  // Iterate through the rows and columns of the game board
   for (let i = 0; i < board.length; i++) {
     for (let j = 0; j < board[i].length; j++) {
       let cellValue = board[i][j].getValue();
+
+      //Axes are reversed :) / Try to figure out fix
+      let cellRow = i;
+      let cellColumn = j;
+      //Axes are reversed :) / Try to figure out fix
 
       if (cellValue === 0) {
         cellValue = '';
       } 
 
-      // Create a new div element for each cell
       const cellElement = document.createElement("div");
       cellElement.classList.add("cell");
+       //Axes are reversed :) / Try to figure out fix
+      cellElement.setAttribute("row-id", cellRow)
+      cellElement.setAttribute("coll-id", cellColumn)
+       //Axes are reversed :) / Try to figure out fix
       
-      // Set the content of the cell based on its value
       cellElement.textContent = cellValue;
 
-      // Append the cell to the playGrid
-      playGrid.appendChild(cellElement);
+      playGrid.appendChild(cellElement);      
     }
   }
+  playGrid.addEventListener("click", function(e) {
+    if (e.target && e.target.nodeName == "DIV" && e.target.classList.contains("cell")) {
+      const rowId = e.target.getAttribute("row-id");
+      const colId = e.target.getAttribute("coll-id");
+      game.playRound(rowId, colId); 
+      console.log("Clicked on Row:", rowId, "Column:", colId);
+    }
+  });
 };
-
 
 function Cell() {
   let value = 0;
@@ -133,13 +143,11 @@ function GameController(playerOne, playerTwo) {
   };
 
   const playRound = (column, row) => {
-    // board.printBoard();
     console.log(
       `Dropping ${getActivePlayer().userName}'s token into column ${column}, row ${row}...`
       
     );
     
-    // updateDOM();
     const cell = board.getBoard()[column][row];
 
     if (!cell.isOccupied()) {
@@ -159,14 +167,11 @@ function GameController(playerOne, playerTwo) {
 
   printNewRound();
   
-    
   return { playRound, getActivePlayer, getBoard, printNewRound, resetBoard };
-
 }
 
 function checkWinner() {
   const cellsFlatened = game.getBoard().flat().map((cell) => cell.getValue());
-  // console.log(cellsFlatened)
 
   // Check for a winner in the vertical direction
   for (let i = 0; i < 3; i++) {
@@ -251,15 +256,14 @@ function checkWinner() {
 
 const game = GameController("Camy", "Amy");
 
-
                   // Test game scenarios
                   // Winning Horizontally: 
 //Top row
-// game.playRound(0, 0); 
+game.playRound(0, 0); 
 // game.playRound(1, 1); 
 // game.playRound(0, 1); 
 // game.playRound(1, 2); 
-// game.playRound(0, 2); 
+// game.playRound(2, 2); 
 
 // //Middle row
 // game.playRound(0, 0); 
@@ -322,16 +326,16 @@ const game = GameController("Camy", "Amy");
 // game.playRound(2, 2);
 
                     // Tie scenario
-game.playRound(0, 0); // Player One (X)
-game.playRound(0, 1); // Player Two (O)
-game.playRound(0, 2); // Player One (X)
+// game.playRound(0, 0); // Player One (X)
+// game.playRound(0, 1); // Player Two (O)
+// game.playRound(0, 2); // Player One (X)
 
-game.playRound(2, 0); // Player Two (O)
-game.playRound(1, 1); // Player One (X)
-game.playRound(1, 2); // Player Two (O)
+// game.playRound(2, 0); // Player Two (O)
+// game.playRound(1, 1); // Player One (X)
+// game.playRound(1, 2); // Player Two (O)
 
-game.playRound(1, 0); // Player One (X)
-game.playRound(2, 2); // Player Two (O)
+// game.playRound(1, 0); // Player One (X)
+// game.playRound(2, 2); // Player Two (O)
 // game.playRound(2, 1); // Player One (X)
 
 
