@@ -11,27 +11,6 @@ const Gameboard = function () {
     }
   }
 
-// Test space
-const createDiv = () => {
-  const playGrid = document.getElementById("play-grid");
-  let gridItem = document.createElement("div");
-  gridItem.classList = "cell";
-
-  playGrid.appendChild(gridItem);
-}
-
-const displayBoard = () => {
-  const boardLoop = board.map((row) => row.map((cell) => createDiv()))
-  console.table("From displayBoard",  boardLoop);
-};
-
-displayBoard()
-
-// Test space
-
-
-
-
   const initializeBoard = () => {
     board = [];
     for (let i = 0; i < columns; i++) {
@@ -59,16 +38,47 @@ displayBoard()
       console.error("Invalid row or column");
     }
   };
-
+  
 //  Remove after DOM intercation is added!!!
   const printBoard = () => {
     const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
     console.table(boardWithCellValues);
   };
+  
 //  !!!
 
-  return { getBoard, resetBoard, displayBoard, placeMark, printBoard, board,  };
+  return { getBoard, resetBoard, placeMark, printBoard, board };
 };
+
+const updateDOM = () => {
+  const playGrid = document.getElementById("play-grid");
+  const board = game.getBoard();
+
+  // Clear existing content
+  playGrid.innerHTML = "";
+
+  // Iterate through the rows and columns of the game board
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      let cellValue = board[i][j].getValue();
+
+      if (cellValue === 0) {
+        cellValue = '';
+      } 
+
+      // Create a new div element for each cell
+      const cellElement = document.createElement("div");
+      cellElement.classList.add("cell");
+      
+      // Set the content of the cell based on its value
+      cellElement.textContent = cellValue;
+
+      // Append the cell to the playGrid
+      playGrid.appendChild(cellElement);
+    }
+  }
+};
+
 
 function Cell() {
   let value = 0;
@@ -84,14 +94,6 @@ function Cell() {
   return { placeMark, getValue, isOccupied };
 }
 
-// function updateDOM() {
-//   const playGrid = document.getElementById("play-grid");
-//   const currentBoard = GameController.getBoard;
-//   // const cell = ;
-
-//   console.log("DOM CELL", currentBoard);
-// };
-
 function CreateUser(name, mark) {
   let wins = 0;
   let userName = name;
@@ -106,6 +108,7 @@ function CreateUser(name, mark) {
 // gamecontroller
 function GameController(playerOne, playerTwo) {
   const board = Gameboard();
+  
   const playerOneObj = CreateUser(playerOne, "X");
   const playerTwoObj = CreateUser(playerTwo, "0");
 
@@ -120,6 +123,9 @@ function GameController(playerOne, playerTwo) {
 
   const getActivePlayerMark = () => activePlayer.userMark;
 
+  const getBoard = () => board.getBoard();
+  const resetBoard = () => board.resetBoard();
+
   const printNewRound = () => {
     board.printBoard();
     console.log(`${getActivePlayer().userName}'s turn.`);
@@ -127,10 +133,13 @@ function GameController(playerOne, playerTwo) {
   };
 
   const playRound = (column, row) => {
+    // board.printBoard();
     console.log(
       `Dropping ${getActivePlayer().userName}'s token into column ${column}, row ${row}...`
+      
     );
-
+    
+    // updateDOM();
     const cell = board.getBoard()[column][row];
 
     if (!cell.isOccupied()) {
@@ -138,7 +147,7 @@ function GameController(playerOne, playerTwo) {
       board.placeMark(column, row, getActivePlayerMark());
 
       checkWinner();
-
+      updateDOM(); 
       switchPlayerTurn();
       printNewRound();
       
@@ -148,8 +157,15 @@ function GameController(playerOne, playerTwo) {
     }
   };
 
-const checkWinner = () => {
-  const cellsFlatened = getBoard().flat().map((cell) => cell.getValue());
+  printNewRound();
+  
+    
+  return { playRound, getActivePlayer, getBoard, printNewRound, resetBoard };
+
+}
+
+function checkWinner() {
+  const cellsFlatened = game.getBoard().flat().map((cell) => cell.getValue());
   // console.log(cellsFlatened)
 
   // Check for a winner in the vertical direction
@@ -159,13 +175,14 @@ const checkWinner = () => {
           cellsFlatened[i] === cellsFlatened[i + 3] &&
           cellsFlatened[i] === cellsFlatened[i + 6]
       ) {
+          updateDOM();
           
           console.log(`Player ${cellsFlatened[i]} wins vertically!`);
-          printNewRound();
-          getActivePlayer().addWin();
-          console.log(getActivePlayer().userName, getActivePlayer().getWins());
+          game.printNewRound();
+          game.getActivePlayer().addWin();
+          console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
           console.log("A round has ended");
-          board.resetBoard();
+          game.resetBoard(); // Change this line
           return;
       }  
   }
@@ -177,12 +194,14 @@ const checkWinner = () => {
           cellsFlatened[i] === cellsFlatened[i + 1] &&
           cellsFlatened[i] === cellsFlatened[i + 2]
       ) {
+          updateDOM();
+
           console.log(`Player ${cellsFlatened[i]} wins horizontally!`);
-          printNewRound();
-          getActivePlayer().addWin();
-          console.log(getActivePlayer().userName, getActivePlayer().getWins());
+          game.printNewRound();
+          game.getActivePlayer().addWin();
+          console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
           console.log("A round has ended");
-          board.resetBoard();
+          game.resetBoard(); // Change this line
           return;
       } 
   }
@@ -193,12 +212,14 @@ const checkWinner = () => {
       cellsFlatened[0] === cellsFlatened[4] &&
       cellsFlatened[0] === cellsFlatened[8]
   ) {
+      updateDOM();
+
       console.log(`Player ${cellsFlatened[0]} wins diagonally (from top-left to bottom-right)!`);
-      printNewRound();
-      getActivePlayer().addWin();
-      console.log(getActivePlayer().userName, getActivePlayer().getWins());
+      game.printNewRound();
+      game.getActivePlayer().addWin();
+      console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
       console.log("A round has ended");
-      board.resetBoard();
+      game.resetBoard(); // Change this line
       return;
   } 
   if (
@@ -206,29 +227,26 @@ const checkWinner = () => {
       cellsFlatened[2] === cellsFlatened[4] &&
       cellsFlatened[2] === cellsFlatened[6]
   ) {
+      updateDOM();
+
       console.log(`Player ${cellsFlatened[2]} wins diagonally (from top-right to bottom-left)!`);
-      printNewRound();
-      getActivePlayer().addWin();
-      console.log(getActivePlayer().userName, getActivePlayer().getWins());
+      game.printNewRound();
+      game.getActivePlayer().addWin();
+      console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
       console.log("A round has ended");
-      board.resetBoard();
+      game.resetBoard(); // Change this line
       return;
   } 
 
   // Check for a tie
   if (!cellsFlatened.includes(0)) {
-      printNewRound();
+      updateDOM();
+
+      game.printNewRound();
       console.log("It's a tie!");
       console.log("A round has ended");
-      board.resetBoard();
+      game.resetBoard(); // Change this line
   } 
-};
-  const getBoard = () => board.getBoard();
-
-  printNewRound();
-    
-  return { playRound, getActivePlayer, checkWinner, getBoard };
-
 }
 
 const game = GameController("Camy", "Amy");
@@ -237,14 +255,13 @@ const game = GameController("Camy", "Amy");
                   // Test game scenarios
                   // Winning Horizontally: 
 //Top row
-game.playRound(0, 0); 
-game.playRound(1, 1); 
-
+// game.playRound(0, 0); 
+// game.playRound(1, 1); 
 // game.playRound(0, 1); 
 // game.playRound(1, 2); 
 // game.playRound(0, 2); 
 
-//Middle row
+// //Middle row
 // game.playRound(0, 0); 
 // game.playRound(1, 0); 
 // game.playRound(2, 0); 
@@ -305,18 +322,17 @@ game.playRound(1, 1);
 // game.playRound(2, 2);
 
                     // Tie scenario
-// game.playRound(0, 0); // Player One (X)
-// game.playRound(0, 1); // Player Two (O)
-// game.playRound(0, 2); // Player One (X)
+game.playRound(0, 0); // Player One (X)
+game.playRound(0, 1); // Player Two (O)
+game.playRound(0, 2); // Player One (X)
 
-// game.playRound(2, 0); // Player Two (O)
-// game.playRound(1, 1); // Player One (X)
-// game.playRound(1, 2); // Player Two (O)
+game.playRound(2, 0); // Player Two (O)
+game.playRound(1, 1); // Player One (X)
+game.playRound(1, 2); // Player Two (O)
 
-// game.playRound(1, 0); // Player One (X)
-// game.playRound(2, 2); // Player Two (O)
+game.playRound(1, 0); // Player One (X)
+game.playRound(2, 2); // Player Two (O)
 // game.playRound(2, 1); // Player One (X)
-// updateDOM();
 
 
 
