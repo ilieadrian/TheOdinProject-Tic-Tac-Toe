@@ -1,3 +1,5 @@
+const playGrid = document.getElementById("play-grid");
+
 // gameboard
 const Gameboard = function () {
   const rows = 3;
@@ -50,7 +52,6 @@ const Gameboard = function () {
 };
 
 const updateDOM = () => {
-  const playGrid = document.getElementById("play-grid");
   const board = game.getBoard();
 
   playGrid.innerHTML = "";
@@ -58,11 +59,8 @@ const updateDOM = () => {
   for (let i = 0; i < board.length; i++) {
     for (let j = 0; j < board[i].length; j++) {
       let cellValue = board[i][j].getValue();
-
-      //Axes are reversed :) / Try to figure out fix
       let cellRow = i;
       let cellColumn = j;
-      //Axes are reversed :) / Try to figure out fix
 
       if (cellValue === 0) {
         cellValue = '';
@@ -80,14 +78,6 @@ const updateDOM = () => {
       playGrid.appendChild(cellElement);      
     }
   }
-  playGrid.addEventListener("click", function(e) {
-    if (e.target && e.target.nodeName == "DIV" && e.target.classList.contains("cell")) {
-      const rowId = e.target.getAttribute("row-id");
-      const colId = e.target.getAttribute("coll-id");
-      game.playRound(rowId, colId); 
-      console.log("Clicked on Row:", rowId, "Column:", colId);
-    }
-  });
 };
 
 function Cell() {
@@ -143,11 +133,10 @@ function GameController(playerOne, playerTwo) {
   };
 
   const playRound = (column, row) => {
-    console.log(
-      `Dropping ${getActivePlayer().userName}'s token into column ${column}, row ${row}...`
-      
-    );
-    
+    if (!column && !row) {
+      updateDOM(); 
+    }
+
     const cell = board.getBoard()[column][row];
 
     if (!cell.isOccupied()) {
@@ -157,7 +146,6 @@ function GameController(playerOne, playerTwo) {
       checkWinner();
       updateDOM(); 
       switchPlayerTurn();
-      printNewRound();
       
     } else {
       console.log("Cell is already occupied");
@@ -254,12 +242,23 @@ function checkWinner() {
   } 
 }
 
+playGrid.addEventListener("click", function(e) {
+  e.preventDefault();
+  if (e.target && e.target.nodeName == "DIV" && e.target.classList.contains("cell")) {
+    const rowId = e.target.getAttribute("row-id");
+    const colId = e.target.getAttribute("coll-id");
+    game.playRound(rowId, colId); 
+    updateDOM();
+  }
+});
+
+
 const game = GameController("Camy", "Amy");
 
                   // Test game scenarios
                   // Winning Horizontally: 
 //Top row
-game.playRound(0, 0); 
+game.playRound(); 
 // game.playRound(1, 1); 
 // game.playRound(0, 1); 
 // game.playRound(1, 2); 
