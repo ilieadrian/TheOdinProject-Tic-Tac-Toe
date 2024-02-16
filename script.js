@@ -46,15 +46,8 @@ const Gameboard = function () {
       console.error("Invalid row or column");
     }
   };
-  
-//  Remove after DOM intercation is added!!!
-  const printBoard = () => {
-    const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
-    console.table(boardWithCellValues);
-  };
-//  !!!
 
-  return { getBoard, resetBoard, placeMark, printBoard, board };
+  return { getBoard, resetBoard, placeMark, board };
 };
 
 function Cell() {
@@ -106,26 +99,11 @@ function GameController(playerOne, playerTwo) {
 
   const getBoard = () => board.getBoard();
   const resetBoard = () => board.resetBoard();
+
   const getDraws = () => draws;
   const addDraw = () => draws++;
 
-  const printNewRound = () => {
-    board.printBoard();
-    // console.log(`${getActivePlayer().userName}'s turn.`);
-    // console.log(`Wins - ${playerOneObj.userName}: ${playerOneObj.getWins()}, ${playerTwoObj.userName}: ${playerTwoObj.getWins()}`);
-  };
-
   const playRound = (column, row) => {
-
-    // console.log(
-    //   // `Dropping ${getActivePlayer().name}'s token into column ${column, row}...`
-    //   // `Dropping ${getActivePlayer().userName}'s token into column ${column}, row ${row}...`
-      
-    // );
-    // console.log(`${getActivePlayer().userName}'s turn.`);
-    // console.log(`Wins - ${playerOneObj.userName}: ${playerOneObj.getWins()}, ${playerTwoObj.userName}: ${playerTwoObj.getWins()}`);
-
-    
     if (!column && !row) {
       updateDOM(); 
     } else {
@@ -145,9 +123,7 @@ function GameController(playerOne, playerTwo) {
     }
   };
 
-  printNewRound();
-  
-  return { 
+    return { 
     playRound, 
     getPlayerOneName, 
     getPlayerOneWins,
@@ -156,7 +132,6 @@ function GameController(playerOne, playerTwo) {
     getDraws,
     addDraw, 
     getBoard, 
-    printNewRound, 
     resetBoard 
   };
 }
@@ -173,7 +148,6 @@ function checkWinner() {
       ) {
 
           console.log(`Player ${cellsFlatened[i]} wins vertically!`);
-          game.printNewRound();
           game.getActivePlayer().addWin();
           console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
           console.log("A round has ended");
@@ -190,7 +164,6 @@ function checkWinner() {
           cellsFlatened[i] === cellsFlatened[i + 2]
       ) {
           console.log(`Player ${cellsFlatened[i]} wins horizontally!`);
-          game.printNewRound();
           game.getActivePlayer().addWin();
           console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
           console.log("A round has ended");
@@ -206,7 +179,6 @@ function checkWinner() {
       cellsFlatened[0] === cellsFlatened[8]
   ) {
       console.log(`Player ${cellsFlatened[0]} wins diagonally (from top-left to bottom-right)!`);
-      game.printNewRound();
       game.getActivePlayer().addWin();
       console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
       console.log("A round has ended");
@@ -219,7 +191,7 @@ function checkWinner() {
       cellsFlatened[2] === cellsFlatened[6]
   ) {
       console.log(`Player ${cellsFlatened[2]} wins diagonally (from top-right to bottom-left)!`);
-      game.printNewRound();
+      game.printNewRoun();
       game.getActivePlayer().addWin();
       console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
       console.log("A round has ended");
@@ -229,7 +201,6 @@ function checkWinner() {
 
   // Check for a tie
   if (!cellsFlatened.includes(0)) {
-      game.printNewRound();
       game.addDraw();
       console.log("It's a tie!");
       console.log("A round has ended");
