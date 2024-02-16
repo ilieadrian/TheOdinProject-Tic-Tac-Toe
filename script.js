@@ -6,7 +6,6 @@ const restartBtn = document.getElementById("reset-btn");
 const player1Input = document.getElementById("player1name")
 const player2Input = document.getElementById("player2name");
 
-
 // gameboard
 const Gameboard = function () {
   const rows = 3;
@@ -58,8 +57,6 @@ const Gameboard = function () {
   return { getBoard, resetBoard, placeMark, printBoard, board };
 };
 
-
-
 function Cell() {
   let value = 0;
 
@@ -88,6 +85,7 @@ function CreateUser(name, mark) {
 // gamecontroller
 function GameController(playerOne, playerTwo) {
   const board = Gameboard();
+  let draws = 0;
 
   const playerOneObj = CreateUser(playerOne, "X");
   const playerTwoObj = CreateUser(playerTwo, "0");
@@ -103,8 +101,13 @@ function GameController(playerOne, playerTwo) {
 
   const getActivePlayerMark = () => activePlayer.userMark;
 
+  const getPlayerOneName = () => playerOneObj.userName;
+  const getPlayerOneWins = () => playerOneObj.getWins();
+
   const getBoard = () => board.getBoard();
   const resetBoard = () => board.resetBoard();
+  const getDraws = () => draws;
+  const addDraw = () => draws++;
 
   const printNewRound = () => {
     board.printBoard();
@@ -144,7 +147,18 @@ function GameController(playerOne, playerTwo) {
 
   printNewRound();
   
-  return { playRound, getActivePlayer, getBoard, printNewRound, resetBoard };
+  return { 
+    playRound, 
+    getPlayerOneName, 
+    getPlayerOneWins,
+    playerTwoObj, 
+    getActivePlayer,
+    getDraws,
+    addDraw, 
+    getBoard, 
+    printNewRound, 
+    resetBoard 
+  };
 }
 
 function checkWinner() {
@@ -216,6 +230,7 @@ function checkWinner() {
   // Check for a tie
   if (!cellsFlatened.includes(0)) {
       game.printNewRound();
+      game.addDraw();
       console.log("It's a tie!");
       console.log("A round has ended");
       // game.resetBoard(); // Change this line
@@ -258,12 +273,12 @@ const drawCount = document.getElementById("draws");
     }
   }
 
-  //  
-
   gameUpdates.innerHTML = `${game.getActivePlayer().userName}'s turn.`;
-
-  console.log(`${game.getActivePlayer().userName}'s turn.`);
-
+  player1NameInfoContainer.innerHTML = `${game.getPlayerOneName()}`;
+  player1ScoreInfoContainer.innerHTML = `Wins: ${game.getPlayerOneWins()}`;
+  player2NameInfoContainer.innerHTML = `${game.playerTwoObj.userName}`;
+  player2ScoreInfoContainer.innerHTML = `Wins: ${game.playerTwoObj.getWins()}`;
+  drawCount.innerHTML = `Draws: ${game.getDraws()}`;
 };
 
 startBtn.addEventListener("click", function(e) {
@@ -274,7 +289,6 @@ startBtn.addEventListener("click", function(e) {
   if(player1.length > 0 || player2.length > 0 ) {
     game = GameController(player1, player2);
     game.playRound(); 
-
   }
     
   });
