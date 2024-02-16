@@ -135,21 +135,21 @@ function GameController(playerOne, playerTwo) {
   const playRound = (column, row) => {
     if (!column && !row) {
       updateDOM(); 
-    }
-
-    const cell = board.getBoard()[column][row];
-
-    if (!cell.isOccupied()) {
-      
-      board.placeMark(column, row, getActivePlayerMark());
-
-      checkWinner();
-      updateDOM(); 
-      switchPlayerTurn();
-      
     } else {
-      console.log("Cell is already occupied");
-      return;
+      const cell = board.getBoard()[column][row];
+
+      if (!cell.isOccupied()) {
+      
+        board.placeMark(column, row, getActivePlayerMark());
+  
+        checkWinner();
+        updateDOM(); 
+        switchPlayerTurn();
+        
+      } else {
+        console.log("Cell is already occupied");
+        return;
+      }
     }
   };
 
