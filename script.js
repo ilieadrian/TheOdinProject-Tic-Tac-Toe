@@ -96,6 +96,8 @@ function GameController(playerOne, playerTwo) {
 
   const getPlayerOneName = () => playerOneObj.userName;
   const getPlayerOneWins = () => playerOneObj.getWins();
+  const getPlayerTwoName = () => playerTwoObj.userName;
+  const getPlayerTwoWins = () => playerTwoObj.getWins();
 
   const getBoard = () => board.getBoard();
   const resetBoard = () => board.resetBoard();
@@ -127,6 +129,8 @@ function GameController(playerOne, playerTwo) {
     playRound, 
     getPlayerOneName, 
     getPlayerOneWins,
+    getPlayerTwoName,
+    getPlayerTwoWins,
     playerTwoObj, 
     getActivePlayer,
     getDraws,
@@ -209,7 +213,7 @@ function checkWinner() {
 }
 
 const updateDOM = () => {
-
+const gameInfo = document.getElementById("info-panel");
 const player1NameInfoContainer = document.getElementById("player1-name");
 const player1ScoreInfoContainer = document.getElementById("player1-score");
 const player2NameInfoContainer = document.getElementById("player2-name");
@@ -243,13 +247,14 @@ const drawCount = document.getElementById("draws");
       playGrid.appendChild(cellElement);      
     }
   }
-
+  
   gameUpdates.innerHTML = `${game.getActivePlayer().userName}'s turn.`;
   player1NameInfoContainer.innerHTML = `${game.getPlayerOneName()}`;
   player1ScoreInfoContainer.innerHTML = `Wins: ${game.getPlayerOneWins()}`;
-  player2NameInfoContainer.innerHTML = `${game.playerTwoObj.userName}`;
-  player2ScoreInfoContainer.innerHTML = `Wins: ${game.playerTwoObj.getWins()}`;
+  player2NameInfoContainer.innerHTML = `${game.getPlayerTwoName()}`;
+  player2ScoreInfoContainer.innerHTML = `Wins: ${game.getPlayerTwoWins()}`;
   drawCount.innerHTML = `Draws: ${game.getDraws()}`;
+  gameInfo.style.visibility = "visible"
 };
 
 startBtn.addEventListener("click", function(e) {

@@ -45,7 +45,7 @@ body {
 }
 
 #reset-btn {
-    /* display: none; */
+    display: none;
     width: 190px;
     justify-self: center;
     align-self: center;
@@ -123,7 +123,7 @@ input[type=text] {
 }
 
 .game-info {
-    /* visibility: hidden; */
+    visibility: hidden;
     margin: 0 auto;
     border: 3px solid rgba(62, 76, 117, 1);
     width: 680px;
