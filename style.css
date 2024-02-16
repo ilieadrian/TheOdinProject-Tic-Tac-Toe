@@ -45,6 +45,7 @@ body {
 }
 
 #reset-btn {
+    /* display: none; */
     width: 190px;
     justify-self: center;
     align-self: center;
@@ -86,8 +87,8 @@ form p {
 }
 
 label {
-    width: 150px; /* Set a fixed width for the labels */
-    text-align: right; /* Align the text to the right within the label */
+    width: 150px; 
+    text-align: right;
 }
 
 input[type=text] {
@@ -104,7 +105,6 @@ input[type=text] {
     grid-template-rows: repeat(3, 100px);
     place-content: center;
     gap: 0.2rem;
-    /* margin-bottom: -5rem; */
 }
 
 .cell {
@@ -123,6 +123,7 @@ input[type=text] {
 }
 
 .game-info {
+    /* visibility: hidden; */
     margin: 0 auto;
     border: 3px solid rgba(62, 76, 117, 1);
     width: 680px;
@@ -131,6 +132,10 @@ input[type=text] {
     align-items: center;
     justify-content: center;
     grid-template-columns: repeat(3, 1fr);
+}
+
+#game-updates {
+    font-weight: 600;
 }
 
 .game-info-constainer {
