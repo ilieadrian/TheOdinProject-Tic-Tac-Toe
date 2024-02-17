@@ -150,12 +150,9 @@ function checkWinner() {
           cellsFlatened[i] === cellsFlatened[i + 3] &&
           cellsFlatened[i] === cellsFlatened[i + 6]
       ) {
-
-          console.log(`Player ${cellsFlatened[i]} wins vertically!`);
           game.getActivePlayer().addWin();
-          console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
           console.log("A round has ended");
-          // game.resetBoard(); // Change this line
+          // Logic to stop the round / display the new round button
           return;
       }  
   }
@@ -167,11 +164,10 @@ function checkWinner() {
           cellsFlatened[i] === cellsFlatened[i + 1] &&
           cellsFlatened[i] === cellsFlatened[i + 2]
       ) {
-          console.log(`Player ${cellsFlatened[i]} wins horizontally!`);
           game.getActivePlayer().addWin();
-          console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
           console.log("A round has ended");
-          // game.resetBoard(); // Change this line
+          // Logic to stop the round / display the new round button
+
           return;
       } 
   }
@@ -182,11 +178,10 @@ function checkWinner() {
       cellsFlatened[0] === cellsFlatened[4] &&
       cellsFlatened[0] === cellsFlatened[8]
   ) {
-      console.log(`Player ${cellsFlatened[0]} wins diagonally (from top-left to bottom-right)!`);
       game.getActivePlayer().addWin();
-      console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
       console.log("A round has ended");
-      // game.resetBoard(); // Change this line
+      // Logic to stop the round / display the new round button
+
       return;
   } 
   if (
@@ -194,21 +189,19 @@ function checkWinner() {
       cellsFlatened[2] === cellsFlatened[4] &&
       cellsFlatened[2] === cellsFlatened[6]
   ) {
-      console.log(`Player ${cellsFlatened[2]} wins diagonally (from top-right to bottom-left)!`);
-      game.printNewRoun();
       game.getActivePlayer().addWin();
-      console.log(game.getActivePlayer().userName, game.getActivePlayer().getWins());
       console.log("A round has ended");
-      // game.resetBoard(); // Change this line
+      // Logic to stop the round / display the new round button
+
       return;
   } 
 
   // Check for a tie
   if (!cellsFlatened.includes(0)) {
       game.addDraw();
-      console.log("It's a tie!");
       console.log("A round has ended");
-      // game.resetBoard(); // Change this line
+      // Logic to stop the round / display the new round button
+
   } 
 }
 
