@@ -6,7 +6,6 @@ const restartBtn = document.getElementById("reset-btn");
 const player1Input = document.getElementById("player1name")
 const player2Input = document.getElementById("player2name");
 
-// gameboard
 const Gameboard = function () {
   const rows = 3;
   const columns = 3;
@@ -75,7 +74,6 @@ function CreateUser(name, mark) {
   return { userName, userMark, getWins, addWin }
 }
 
-// gamecontroller
 function GameController(playerOne, playerTwo) {
   const board = Gameboard();
   let draws = 0;
@@ -112,14 +110,11 @@ function GameController(playerOne, playerTwo) {
       const cell = board.getBoard()[column][row];
 
       if (!cell.isOccupied()) {
-      
         board.placeMark(column, row, getActivePlayerMark());
   
         checkWinner();
         switchPlayerTurn();
-
       } else {
-        console.log("Cell is already occupied");
         return;
       }
     }
@@ -140,9 +135,32 @@ function GameController(playerOne, playerTwo) {
   };
 }
 
+const modalControl = (draw) => {
+  const modal = document.getElementById("modal"); // Replace with the actual ID of your modal
+  const modalMessage = document.getElementById("modal-message"); 
+
+  const activateModal = (draw) => {
+    modal.style.display = "block";
+
+    if (draw) {
+      modalMessage.innerHTML = "Tie score";
+    } else {
+      modalMessage.innerHTML = `${game.getActivePlayer().userName} wins the round`
+    };
+  };
+
+  const closeModal = () => {
+    game.resetBoard();
+    modal.style.display = "none";
+  }
+
+  return { activateModal, closeModal };
+};
+
 function checkWinner() {
   const cellsFlatened = game.getBoard().flat().map((cell) => cell.getValue());
-
+  const modal = modalControl(); 
+  
   // Check for a winner in the vertical direction
   for (let i = 0; i < 3; i++) {
       if (
@@ -151,8 +169,7 @@ function checkWinner() {
           cellsFlatened[i] === cellsFlatened[i + 6]
       ) {
           game.getActivePlayer().addWin();
-          console.log("A round has ended");
-          // Logic to stop the round / display the new round button
+          modal.activateModal(false);
           return;
       }  
   }
@@ -165,9 +182,7 @@ function checkWinner() {
           cellsFlatened[i] === cellsFlatened[i + 2]
       ) {
           game.getActivePlayer().addWin();
-          console.log("A round has ended");
-          // Logic to stop the round / display the new round button
-
+          modal.activateModal(false);
           return;
       } 
   }
@@ -179,9 +194,7 @@ function checkWinner() {
       cellsFlatened[0] === cellsFlatened[8]
   ) {
       game.getActivePlayer().addWin();
-      console.log("A round has ended");
-      // Logic to stop the round / display the new round button
-
+      modal.activateModal(false);
       return;
   } 
   if (
@@ -190,18 +203,15 @@ function checkWinner() {
       cellsFlatened[2] === cellsFlatened[6]
   ) {
       game.getActivePlayer().addWin();
-      console.log("A round has ended");
-      // Logic to stop the round / display the new round button
-
+      modal.activateModal(false);
       return;
   } 
 
   // Check for a tie
   if (!cellsFlatened.includes(0)) {
       game.addDraw();
-      console.log("A round has ended");
-      // Logic to stop the round / display the new round button
-
+      modal.activateModal(true);
+      return;
   } 
 }
 
@@ -230,10 +240,10 @@ const drawCount = document.getElementById("draws");
 
       const cellElement = document.createElement("div");
       cellElement.classList.add("cell");
-       //Axes are reversed :) / Try to figure out fix
+       //Axes are reversed / Try to figure out fix
       cellElement.setAttribute("row-id", cellRow)
       cellElement.setAttribute("coll-id", cellColumn)
-       //Axes are reversed :) / Try to figure out fix
+       //Axes are reversed / Try to figure out fix
       
       cellElement.textContent = cellValue;
 
@@ -255,11 +265,10 @@ startBtn.addEventListener("click", function(e) {
   const player1 = player1Input.value;
   const player2 = player2Input.value;
 
-  if(player1.length > 0 || player2.length > 0 ) {
-    game = GameController(player1, player2);
-    game.playRound(); 
-  }
-    
+    if(player1.length > 0 || player2.length > 0 ) {
+      game = GameController(player1, player2);
+      game.playRound(); 
+    }
   });
 
 playGrid.addEventListener("click", function(e) {
@@ -273,7 +282,7 @@ playGrid.addEventListener("click", function(e) {
 });
 
 restartBtn.addEventListener("click", function(e) {
-  e.preventDefault();
-  game.resetBoard();
+  const modal = modalControl(); 
+  modal.closeModal();
   updateDOM();
 });
