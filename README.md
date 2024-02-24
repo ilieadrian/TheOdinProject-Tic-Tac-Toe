@@ -1,1 +1,1 @@
-Live version: https://ia-tic-tac-toe.netlify.app
+Live version: https://tictactoe.ilieadrian.com/
